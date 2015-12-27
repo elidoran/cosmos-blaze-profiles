@@ -32,11 +32,14 @@ The first one I created is straight from mitar's peerlibrary:blaze-components ex
 Add profiles for use by any templates. These may include all the function types listed above. They do not require an associated template.
 
 The first level of keys in the specified object are profile names.
+
 The second level of keys are the type, or category, of the functions beneath it (such as helpers).
+
 The third level of keys are the names of the items of that type, such as the name of a helper.
+
 The values for the third level's keys are the functions.
 
-For example:
+For example ([JS version](#templateprofilesobject-js)):
 
 ```coffeescript
 Template.profiles
@@ -55,11 +58,13 @@ Template.profiles
       $myFunction: -> # a function which is added to the template instance
 ```
 
+#### Template.profiles() with References
+
 It is possible to reference something in another profile. Specify the profile name in the third level key and the name of the function in that profile as the value for that key.
 
 This allows building a new profile which uses things from one or more existing profiles.
 
-For example:
+For example ([JS Version](#templateprofilesobject-with-references-js)):
 
 ```coffeescript
 Template.profiles
@@ -93,7 +98,7 @@ Note:
 
 So, either pay attention to the order profiles are added to templates, or, make a new profile specifying exactly the ones wanted.
 
-For example:
+For example ([JS Version](#templatesometemplateprofilesarray-js)):
 
 ```coffeescript
 Template.SomeTemplate.profiles [ 'profileName', 'anotherProfile' ]
@@ -122,7 +127,7 @@ Allowed in:
 5. Template.onDestroyed()
 6. Template.functions() - this is a non-standard function, but, it's available
 
-For example, to reference a helper in another profile:
+For example, to reference a helper in another profile ([JS Version](#templatemytemplatehelpers-js)):
 
 ```coffeescript
 Template.myTemplate.helpers
@@ -132,3 +137,84 @@ Template.myTemplate.helpers
 
 
 ## MIT License
+
+### Template.profiles(object) JS
+
+```javascript
+Template.profiles({
+  someProfile: {
+    helpers: {
+      value: function() { this.$myFunction('return some value'); }
+    }
+    , events: {
+      'keypress input': (event, template) -> # do something...
+    }
+    , onCreated: {
+      initVar: function() {} // create something and assign it on template instance
+    }
+    , onRendered: {
+      alterView: function() {} // do something with rendered view
+    }
+    , onDestroyed: {
+      clearVar: function() {} // remove/reset something from the onCreated function above
+    }
+    , functions: {
+      $myFunction: function() {} // a function which is added to the template instance
+    }
+});
+```
+
+### Template.profiles(object) with References JS
+
+```javascript
+Template.profiles({
+  someProfile:{
+    helpers: {
+      value: function() {} //  some value helper
+    }
+    , functions: {
+      $doWork: function() {} // some helpful function
+    }
+  },
+  anotherProfile: {
+    helpers: {
+      // name of profile : name of helper in profile
+      someProfile: 'value'
+    }
+    , functions: {
+      // name of profile : name of function in profile
+      someProfile: '$doWork'
+    }
+  }
+})
+```
+
+### Template.someTemplateName.profiles(array) JS
+
+```javascript
+Template.SomeTemplate.profiles([ 'profileName', 'anotherProfile' ]);
+
+// custom profile to be selective
+Template.profiles({
+  customProfile:{
+    helpers: {
+      profileName: 'someHelper'
+    }
+    , events: {
+      anotherProfile: 'some event'
+    }
+  }
+});
+
+Template.SomeTemplate.profiles([ 'customProfile' ]);
+```
+
+### Template.myTemplate.helpers() JS
+
+```javascript
+Template.myTemplate.helpers({
+  value: function() { return 'some normal helper'; }
+  // helper 'label' in profile 'profile1'
+  , profile1: function() { return 'label'; }
+});
+```
