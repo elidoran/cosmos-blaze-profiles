@@ -98,7 +98,7 @@ Note:
 
 So, either pay attention to the order profiles are added to templates, or, make a new profile specifying exactly the ones wanted.
 
-For example ([JS Version](#templatesometemplateprofilesarray-js)):
+For example ([JS Version](#templatesometemplatenameprofilesarray-js)):
 
 ```coffeescript
 Template.SomeTemplate.profiles [ 'profileName', 'anotherProfile' ]
