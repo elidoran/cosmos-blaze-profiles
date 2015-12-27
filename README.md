@@ -11,6 +11,13 @@ Function types:
 5. onDestroyed
 6. functions - functions added to template instances
 
+It's a tiny library, less than 100 lines of code.
+
+## Install
+
+```
+meteor add cosmos:blaze-profiles
+```
 
 ## Examples
 
