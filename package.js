@@ -2,7 +2,7 @@ Package.describe({
   name: 'cosmos:blaze-profiles',
   version: '0.1.0',
   summary: 'Reusable Blaze Templates via function profiles',
-  git: '',
+  git: 'https://github.com/elidoran/cosmos-blaze-profiles',
   documentation: 'README.md'
 });
 
