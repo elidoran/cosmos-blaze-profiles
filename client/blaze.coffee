@@ -21,7 +21,7 @@ replaceReference = (profile, type, name) ->
   return referencedFunction
 
 # replace all references in the object with their referenced functions
-replaceReferences = (type, object) ->
+Template.profiles.$replaceReferences = replaceReferences = (type, object) ->
   # in case the stuff is stored within a property matching `type`
   if object?[type]? then object = object[type]
 
@@ -69,7 +69,10 @@ Template::functions = (object) ->
   unless @_instanceFunctions?
     @_instanceFunctions = instanceFunctions = {}
     @onCreated ->
-      @[name] = fn for own name,fn of instanceFunctions
+      # small tweak to help cosmos:blaze-this which alters the `this`
+      template = this?.template ? this
+      for own name,fn of instanceFunctions
+        template[name] = fn
 
   # now we add the specified functions to the stored ones
   @_instanceFunctions[name] = fn for own name,fn of object
