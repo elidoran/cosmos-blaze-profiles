@@ -25,6 +25,8 @@ See some [examples](http://github.com/elidoran/cosmos-blaze-profiles-examples).
 
 The first one I created is straight from mitar's peerlibrary:blaze-components example: *ExtremeInputComponent*.
 
+## TODO: Explain creating reusable template via Template.templateName.renderAs 'NewName'
+
 ## API
 
 ### Template.profiles(object)
@@ -60,9 +62,9 @@ Template.profiles
 
 #### Template.profiles() with References
 
-It is possible to reference something in another profile. Specify the profile name in the third level key and the name of the function in that profile as the value for that key.
+It is possible to reference something in another profile. Specify the profile name as the value for that key. This allows building a new profile which uses things from one or more existing profiles.
 
-This allows building a new profile which uses things from one or more existing profiles.
+It is possible to use a different name in the new profile by specifying the name in the other profile along with the profile name. So, instead of the value being `otherProfileName`, make it: `nameInOtherProfile@otherProfileName`.
 
 For example ([JS Version](#templateprofilesobject-with-references-js)):
 
@@ -76,11 +78,12 @@ Template.profiles
 
   anotherProfile:
     helpers:
-      # name of profile : name of helper in profile
-      someProfile: 'value'
+      # name of helper in this profile : name of other profile
+      value: 'someProfile'
     functions:
-      # name of profile : name of function in profile
-      someProfile: '$doWork'
+      # key  : *different* name of helper in this profile
+      # value: helper name in other profile @ name of other profile
+      $work: '$doWork@someProfile'
 ```
 
 ### Template.someTemplateName.profiles(array)
@@ -178,12 +181,13 @@ Template.profiles({
   },
   anotherProfile: {
     helpers: {
-      // name of profile : name of helper in profile
-      someProfile: 'value'
+      // name of helper in this profile : name of other profile
+      value: 'someProfile'
     }
     , functions: {
-      // name of profile : name of function in profile
-      someProfile: '$doWork'
+      // key  : *different* name of helper in this profile
+      // value: helper name in other profile @ name of other profile
+      $work: '$doWork@someProfile'
     }
   }
 })
