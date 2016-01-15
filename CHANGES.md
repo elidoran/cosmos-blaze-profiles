@@ -1,3 +1,7 @@
+0.2.0 - Released 2015/01/15
+
+1. changed ref's from `profileName: 'thingName'` to `thingName: 'profileName'` or `localThingName: 'thingName@profileName'`
+
 0.1.1 - Released 2015/12/29
 
 1. provided internal `replaceReferences` functions via `Template.profiles.$replaceReferences`
