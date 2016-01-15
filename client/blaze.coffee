@@ -19,7 +19,7 @@ Template.profiles = (newProfiles) ->
 replaceReference = (profile, type, name) ->
   referencedFunction = profiles?[profile]?[type]?[name]
   unless referencedFunction?
-    console.log "Error, no function named #{name} found for type #{type} in profile #{profile}"
+    console.log "Error, no function named \"#{name}\" found for type \"#{type}\" in profile \"#{profile}\""
   return referencedFunction
 
 # replace all references in the object with their referenced functions
@@ -29,8 +29,19 @@ Template._replaceReferences = replaceReferences = (type, object) ->
 
   for own name,value of object
     if 'string' is typeof value
-      delete object[name]
-      object[value] = replaceReference name, type, value
+      # posibilities:
+      #  1. may be a string value, nothing for us to do
+      #  2. may be a profile name to retrieve the thing from, like: 'profileName'
+      #  3. may be both a profile name and the thing's name there, like: 'name@profileName'
+      if profiles[value]? then profileName = value
+      else # check for format name@profile
+        parts = value.split '@'
+        if profiles?[parts?[1]]?
+          profileName = parts[1]
+          otherName = parts[0]   # name of thing in the other profile
+      if profileName?
+        delete object[name]
+        object[name] = replaceReference profileName, type, (otherName ? name)
 
   return object
 
