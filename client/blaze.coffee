@@ -23,7 +23,7 @@ replaceReference = (profile, type, name) ->
   return referencedFunction
 
 # replace all references in the object with their referenced functions
-Template.profiles.$replaceReferences = replaceReferences = (type, object) ->
+Template._replaceReferences = replaceReferences = (type, object) ->
   # in case the stuff is stored within a property matching `type`
   if object?[type]? then object = object[type]
 
