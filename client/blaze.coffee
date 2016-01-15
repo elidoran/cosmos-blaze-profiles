@@ -1,5 +1,5 @@
 # store all the profiles here
-profiles = {}
+Template._profiles = profiles = {}
 
 # make Template store profiles of functions
 Template.profiles = (newProfiles) ->
