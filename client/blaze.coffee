@@ -7,8 +7,13 @@ Template.profiles = (newProfiles) ->
     for type in [ 'helpers', 'events', 'onCreated', 'onRendered', 'onDestroyed', 'functions' ]
       if profile[type]? then replaceReferences type, profile[type]
 
-    # store the new profile into profiles
-    profiles[profileName] = profile
+    if profiles[profileName]?
+      # copy new stuff into there
+      existingProfile = profiles[profileName]
+      existingProfile[key] = value for key,value of profile
+    else
+      # store the new profile into profiles
+      profiles[profileName] = profile
 
 # gets ref'd function or writes an error
 replaceReference = (profile, type, name) ->
