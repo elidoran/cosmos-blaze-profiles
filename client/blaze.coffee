@@ -100,3 +100,6 @@ Template::profiles = (profileNames) ->
 
     else
       console.log 'Error, no profile named:',profileName
+
+Template::renderAs = (name) ->
+  Template[name] = new Template("Template.#{name}", this.renderFunction);
