@@ -73,6 +73,13 @@ originalEventsFn = Template::events
 Template::events = (object) ->
   originalEventsFn.call this, replaceReferences 'events', object
 
+# prevent overwriting these functions on the template instance
+ILLEGAL_FN_NAMES = [
+  'data', 'view', 'firstNode', 'lastNode', 'autorun',
+  'subscribe', 'subscriptionsReady',
+  '$', 'find', 'findAll'
+]
+
 Template::functions = (object) ->
 
   object = replaceReferences 'functions', object
@@ -88,7 +95,8 @@ Template::functions = (object) ->
         template[name] = fn
 
   # now we add the specified functions to the stored ones
-  @_instanceFunctions[name] = fn for own name,fn of object
+  for own name,fn of object when not (name in ILLEGAL_FN_NAMES)
+    @_instanceFunctions[name] = fn
 
 # add Template.<name>.profile(string+) which accepts profile names
 # it adds all the stuff from the named profiles into this template
