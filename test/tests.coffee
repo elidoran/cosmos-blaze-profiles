@@ -1,5 +1,6 @@
 
 makeTestProfiles = ->
+
   profile1:
     helpers:
       helper1: ->
@@ -30,29 +31,29 @@ makeTestProfiles = ->
 
   profile3:
     helpers:
-      profile1: 'helper1'
-      profile2: 'helper2'
+      helper1: 'profile1'
+      helperTwo: 'helper2@profile2'
     events:
-      profile1: 'some event1'
-      profile2: 'some event2'
+      'some event1': 'profile1'
+      'some eventTwo': 'some event2@profile2'
     onCreated:
-      profile1: 'created1'
-      profile2: 'created2'
+      created1: 'profile1'
+      createdTwo: 'created2@profile2'
     onRendered:
-      profile1: 'rendered1'
-      profile2: 'rendered2'
+      rendered1: 'profile1'
+      renderedTwo: 'rendered2@profile2'
     onDestroyed:
-      profile1: 'destroyed1'
-      profile2: 'destroyed2'
+      destroyed1: 'profile1'
+      destroyedTwo: 'destroyed2@profile2'
     functions:
-      profile1: '$fn1'
-      profile2: '$fn2'
+      $fn1: 'profile1'
+      $fnTwo: '$fn2@profile2'
 
 testProfiles = makeTestProfiles()
 
-Tinytest.add 'profiles stored on function as $', (test) ->
+Tinytest.add 'profiles stored on Template', (test) ->
 
-  test.isNotUndefined Template.profiles.$
+  test.isNotUndefined Template._profiles
 
 
 Tinytest.add 'Template.profiles()', (test) ->
@@ -60,54 +61,54 @@ Tinytest.add 'Template.profiles()', (test) ->
   Template.profiles testProfiles
 
   # these should be the same because they are the same object...
-  test.isTrue deepEqual(Template.profiles.$.profile1, testProfiles.profile1)
-  test.isTrue deepEqual(Template.profiles.$.profile2, testProfiles.profile2)
+  test.isTrue deepEqual(Template._profiles.profile1, testProfiles.profile1)
+  test.isTrue deepEqual(Template._profiles.profile2, testProfiles.profile2)
+
+  # let's test profile3 to ensure its ref's were replaced
+  profile = Template._profiles.profile3
+  test.isNotUndefined profile
 
   # make another version of the test profiles where profile3 is ref's
   testProfiles2 = makeTestProfiles()
-  # ensure the stored profile3 is *not* like that, it should be functions
-  test.isFalse deepEqual(Template.profiles.$.profile3, testProfiles2.profile3)
 
-  # let's test profile3 to ensure its ref's were replaced
-  profile = Template.profiles.$.profile3
-
-  test.isNotUndefined profile
+  # ensure the stored profile3 is *not* like that, it should be functions now
+  test.isFalse deepEqual(profile, testProfiles2.profile3)
 
   # ensure ref's were replaced with functions
   test.isUndefined profile.helpers.profile1
-  test.equal typeof(profile.helpers.helper1), 'function'
+  test.equal typeof(profile.helpers.helper1), 'function', 'should replace helper1'
   test.isUndefined profile.helpers.profile2
-  test.equal typeof(profile.helpers.helper2), 'function'
+  test.equal typeof(profile.helpers.helperTwo), 'function', 'should replace helperTwo'
 
   # ensure ref's were replaced with functions
   test.isUndefined profile.events.profile1
-  test.equal typeof(profile.events['some event1']), 'function'
+  test.equal typeof(profile.events['some event1']), 'function', 'should replace \'some event1\''
   test.isUndefined profile.events.profile2
-  test.equal typeof(profile.events['some event2']), 'function'
+  test.equal typeof(profile.events['some eventTwo']), 'function', 'should replace \'some eventTwo\''
 
   # ensure ref's were replaced with functions
   test.isUndefined profile.onCreated.profile1
-  test.equal typeof(profile.onCreated.created1), 'function'
+  test.equal typeof(profile.onCreated.created1), 'function', 'should replace created1'
   test.isUndefined profile.onCreated.profile2
-  test.equal typeof(profile.onCreated.created2), 'function'
+  test.equal typeof(profile.onCreated.createdTwo), 'function', 'should replace createdTwo'
 
   # ensure ref's were replaced with functions
   test.isUndefined profile.onRendered.profile1
-  test.equal typeof(profile.onRendered.rendered1), 'function'
+  test.equal typeof(profile.onRendered.rendered1), 'function', 'should replace rendered1'
   test.isUndefined profile.onRendered.profile2
-  test.equal typeof(profile.onRendered.rendered2), 'function'
+  test.equal typeof(profile.onRendered.renderedTwo), 'function', 'should replace rendered1'
 
   # ensure ref's were replaced with functions
   test.isUndefined profile.onDestroyed.profile1
-  test.equal typeof(profile.onDestroyed.destroyed1), 'function'
+  test.equal typeof(profile.onDestroyed.destroyed1), 'function', 'should replace destroyed1'
   test.isUndefined profile.onDestroyed.profile2
-  test.equal typeof(profile.onDestroyed.destroyed2), 'function'
+  test.equal typeof(profile.onDestroyed.destroyedTwo), 'function', 'should replace destroyedTwo'
 
   # ensure ref's were replaced with functions
   test.isUndefined profile.functions.profile1
-  test.equal typeof(profile.functions.$fn1), 'function'
+  test.equal typeof(profile.functions.$fn1), 'function', 'should replace $fn1'
   test.isUndefined profile.functions.profile2
-  test.equal typeof(profile.functions.$fn2), 'function'
+  test.equal typeof(profile.functions.$fnTwo), 'function', 'should replace $fnTwo'
 
 
 Tinytest.add 'Template::profiles()', (test) ->
@@ -134,15 +135,18 @@ Tinytest.add 'Template::profiles() by refs', (test) ->
 
   testHasProfilesOneAndTwo test, template
 
+  test.isTrue template.__helpers.has 'helper1'
+  # renamed via profile3 from profile2
+  test.isTrue template.__helpers.has 'helperTwo'
+
   test.equal template.__eventMaps.length, 1, 'should add both into a single event map'
   test.isNotUndefined template.__eventMaps[0]['some event1']
-  test.isNotUndefined template.__eventMaps[0]['some event2']
+  # renamed via profile3 from profile2
+  test.isNotUndefined template.__eventMaps[0]['some eventTwo']
 
 testHasProfilesOneAndTwo = (test, template) ->
 
   # now make sure the template has them
-  test.isTrue template.__helpers.has 'helper1'
-  test.isTrue template.__helpers.has 'helper2'
 
   test.include template._callbacks.created, testProfiles.profile1.onCreated.created1
   test.include template._callbacks.created, testProfiles.profile2.onCreated.created2
