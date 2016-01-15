@@ -10,9 +10,6 @@ Template.profiles = (newProfiles) ->
     # store the new profile into profiles
     profiles[profileName] = profile
 
-# put our storage object on the function to share it
-Template.profiles.$ = profiles
-
 # gets ref'd function or writes an error
 replaceReference = (profile, type, name) ->
   referencedFunction = profiles?[profile]?[type]?[name]
