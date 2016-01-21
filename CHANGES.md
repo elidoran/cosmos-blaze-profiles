@@ -1,3 +1,8 @@
+0.3.1 - Released 2015/01/21
+
+1. fixed bug which reused `profileName` from previous loop iteration
+
+
 0.3.0 - Released 2015/01/15
 
 1. avoid assigning functions to the template instance which overwrite core functions
