@@ -29,6 +29,8 @@ Template._replaceReferences = replaceReferences = (type, object) ->
 
   for own name,value of object
     if 'string' is typeof value
+      # reset the profile name from the last iteration
+      profileName = null
       # posibilities:
       #  1. may be a string value, nothing for us to do
       #  2. may be a profile name to retrieve the thing from, like: 'profileName'
